@@ -1,5 +1,8 @@
 <?php
 
+
+use Micro7\Controllers\HomeController;
+
 require_once "vendor/autoload.php";
 
 $app = new \Micro7\App();
@@ -28,8 +31,11 @@ $container['db'] = function ($c){
     $port     = $c['config']['db_driver'][$default]['port'];
   return  new PDO("{$default}:host={$host};dbname={$dbname};port={$port}",$username,$pass);
 };
-
-$app->get('/',function (){
-    echo "home";
+$container['errorHandler'] = function (){
+  die('404');
+};
+$app->get('/',[HomeController::class,'index']);
+$app->post('/sing-up',function (){
+    echo "sing-up";
 });
 $app->run();
