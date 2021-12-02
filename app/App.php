@@ -16,6 +16,9 @@ class App
         $this->container = new Container([
             'router' => function(){
             return new Router;
+            },
+            'response' => function(){
+            return new Response;
             }
         ]);
     }
@@ -46,17 +49,26 @@ class App
                 return ;
             }
         }
-
-      return $this->process($response);
+      return $this->responsed($this->process($response));
     }
 
     protected function process($callable){
+        $response = $this->container->response;
         if (is_array($callable)){
             if (!is_object($callable[0])){
                 $callable[0] = new $callable[0];
             }
-            return call_user_func($callable);
+            return call_user_func($callable,$response);
         }
-        return $callable();
+        return $callable($response);
+    }
+
+    protected function responsed($response){
+       if (!$response instanceof Response){
+           echo $response;
+           return;
+       }
+       echo $response->getBody();
+       return;
     }
 }

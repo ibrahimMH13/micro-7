@@ -32,7 +32,9 @@ $container['db'] = function ($c){
   return  new PDO("{$default}:host={$host};dbname={$dbname};port={$port}",$username,$pass);
 };
 $container['errorHandler'] = function (){
-  die('404');
+ return function ($response){
+        return $response->setBody('page not found')->withStatus(404);
+ };
 };
 $app->get('/',[HomeController::class,'index']);
 $app->post('/sing-up',function (){
